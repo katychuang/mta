@@ -4,6 +4,8 @@
 """
 
 import csv
+import glob
+
 
 __author__ = "Kat Chuang @katychuang"
 __copyright__ = "Copyright 2014"
@@ -15,9 +17,9 @@ __email__ = "katychuang@gmail.com"
 __status__ = "Development"
 
 
-def splitRow(x):
 
-    audits = []
+def pivot(x, audits = []):
+
     for i in range(4, 43):
         if i in [4, 9, 14, 19, 24, 29, 34, 39]:
                 audits.append(x[0:3] + x[i:i+4])
@@ -25,11 +27,15 @@ def splitRow(x):
     return audits
 
 
-def openFile(filename):
+def openFile(filename, data=[]):
     with open(filename, 'rb') as csvfile:
         stripped = (row.strip() for row in csvfile)
-        subwayReader = csv.reader(stripped, delimiter=',', quotechar='"')
-        data = [row for row in subwayReader]
+        subwayReader = csv.reader(stripped, delimiter=',')
+        try:
+            data = [row for row in subwayReader]
+        except:
+            print "error in " + filename
+
     return data
 
 
@@ -43,17 +49,19 @@ def saveFile(db, outfile):
             writer.writerow(val)
 
 
+for file in glob.glob('rawdata/*.txt'):
+    data = openFile(file)
+    print str(len(data)) + " rows read from " + file
 
-data = openFile('rawdata/turnstile_140607.txt')
+    Y = []
+    for record in data:
+        if (len(record)>0):
+            Y += pivot(record)
 
-Y = []
-for x in data:
-    if (len(x)>0):
-        Y += splitRow(x)
+    output = file.replace("rawdata", "tables")
+    saveFile(Y, output)
 
-saveFile(Y, "x.txt")
 
-print str(len(data)) + " rows read from this file."
 
 
 
