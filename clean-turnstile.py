@@ -24,6 +24,7 @@ def splitRow(x):
 
     return audits
 
+
 def openFile(filename):
     with open(filename, 'rb') as csvfile:
         stripped = (row.strip() for row in csvfile)
@@ -32,14 +33,25 @@ def openFile(filename):
     return data
 
 
-data = openFile('rawdata/turnstile_140705.txt')
+def saveFile(db, outfile):
+
+    # Assuming db is a flat list
+    with open(outfile, "w") as output:
+        writer = csv.writer(output, lineterminator='\n')
+
+        for val in db:
+            writer.writerow(val)
+
+
+
+data = openFile('rawdata/turnstile_140607.txt')
 
 Y = []
-for x in data[:10]:
+for x in data:
     if (len(x)>0):
-        audit = splitRow(x)
-        for x in audit:
-            print x
+        Y += splitRow(x)
+
+saveFile(Y, "x.txt")
 
 print str(len(data)) + " rows read from this file."
 
