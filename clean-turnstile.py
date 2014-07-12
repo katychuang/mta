@@ -22,7 +22,7 @@ def pivot(x, audits = []):
 
     for i in range(4, 43):
         if i in [4, 9, 14, 19, 24, 29, 34, 39]:
-                audits.append(x[0:3] + x[i:i+4])
+            audits.append(x[0:3] + x[i-1:i+4])
 
     return audits
 
